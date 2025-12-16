@@ -1,3 +1,0 @@
-
-COLLECT_CD = 4 * 60 * 60
-BASE_COLLECT = 100
