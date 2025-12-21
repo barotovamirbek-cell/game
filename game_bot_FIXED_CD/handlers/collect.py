@@ -1,30 +1,46 @@
-
+import time
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.types import Message
-from database import get_user, create_user, can_collect, collect, time_left
+from aiogram.filters import Command
+from database import conn, cursor
 
 router = Router()
 
+CD = 3600
+BASE_INCOME = 100
+
 @router.message(Command("collect"))
-async def collect_cmd(message: Message):
-    uid = message.from_user.id
+async def collect(msg: Message):
+    uid = msg.from_user.id
+    cursor.execute(
+        "SELECT balance,last_collect,house_level,car_level FROM users WHERE user_id=?",
+        (uid,)
+    )
+    bal,last,house,car = cursor.fetchone()
 
-    if not get_user(uid):
-        create_user(uid)
+    cursor.execute(
+        "SELECT clothes_bonus FROM equipped WHERE user_id=?",
+        (uid,)
+    )
+    clothes = cursor.fetchone()[0]
 
-    if not can_collect(uid):
-        left = time_left(uid)
-        m = left // 60
-        s = left % 60
-        await message.answer(
-            f"⏳ Рано!\n"
-            f"Осталось: {m} мин {s} сек"
-        )
+    now = int(time.time())
+    if now - last < CD:
+        left = CD - (now - last)
+        await msg.answer(f"⏳ Подожди {left//60} мин")
         return
 
-    income = collect(uid)
-    await message.answer(
-        f"✅ Сбор успешен!\n"
-        f"+{income} 💰"
+    income = int(
+        BASE_INCOME
+        + BASE_INCOME * (house * 0.07)
+        + BASE_INCOME * (car * 0.03)
+        + BASE_INCOME * (clothes / 100)
     )
+
+    cursor.execute(
+        "UPDATE users SET balance=balance+?, last_collect=? WHERE user_id=?",
+        (income, now, uid)
+    )
+    conn.commit()
+
+    await msg.answer(f"💰 Собрано: +{income}")
