@@ -1,19 +1,30 @@
-
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.types import Message
-from database import get_user, create_user
+from aiogram.filters import Command
+from database import cursor
 
 router = Router()
 
 @router.message(Command("profile"))
-async def profile_cmd(message: Message):
-    uid = message.from_user.id
-    if not get_user(uid):
-        create_user(uid)
-    u = get_user(uid)
-    await message.answer(
+async def profile(msg: Message):
+    uid = msg.from_user.id
+
+    cursor.execute(
+        "SELECT balance,house_level,car_level FROM users WHERE user_id=?",
+        (uid,)
+    )
+    bal,house,car = cursor.fetchone()
+
+    cursor.execute(
+        "SELECT clothes_rarity,clothes_bonus FROM equipped WHERE user_id=?",
+        (uid,)
+    )
+    rarity,bonus = cursor.fetchone()
+
+    await msg.answer(
         f"👤 Профиль\n"
-        f"💰 Баланс: {u[1]}\n"
-        f"📈 Доход: {u[2]} / час"
+        f"💰 Баланс: {bal}\n"
+        f"👕 Одежда: {rarity or 'нет'} (+{bonus}%)\n"
+        f"🏠 Дом: {house}\n"
+        f"🚗 Машина: {car}"
     )
