@@ -1,16 +1,14 @@
-
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.types import Message
-from database import create_user
+from aiogram.filters import Command
+from database import conn, cursor
 
 router = Router()
 
 @router.message(Command("start"))
-async def start_cmd(message: Message):
-    create_user(message.from_user.id)
-    await message.answer(
-        "👋 Добро пожаловать!\n"
-        "/collect — собрать доход\n"
-        "/profile — профиль"
-    )
+async def start(msg: Message):
+    uid = msg.from_user.id
+    cursor.execute("INSERT OR IGNORE INTO users(user_id) VALUES(?)", (uid,))
+    cursor.execute("INSERT OR IGNORE INTO equipped(user_id) VALUES(?)", (uid,))
+    conn.commit()
+    await msg.answer("🎮 Добро пожаловать в игру!")
