@@ -1,8 +1,8 @@
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from keyboards.main_menu import main_menu
 from database import cursor, conn
+from keyboards.main_menu import main_menu
 
 router = Router()
 
@@ -14,7 +14,4 @@ async def start(msg: Message):
     )
     conn.commit()
 
-    await msg.answer(
-        "🎮 Добро пожаловать в игру!\n\nВыбери действие 👇",
-        reply_markup=main_menu
-    )
+    await msg.answer("🎮 Главное меню", reply_markup=main_menu)
