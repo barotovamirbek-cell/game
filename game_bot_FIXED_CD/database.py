@@ -6,27 +6,19 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
-    balance INTEGER DEFAULT 0,
-    last_collect INTEGER DEFAULT 0,
-    house_level INTEGER DEFAULT 1,
-    car_level INTEGER DEFAULT 1
+    money INTEGER DEFAULT 0,
+    crystals INTEGER DEFAULT 0,
+    clan_id INTEGER DEFAULT NULL
 )
 """)
 
 cursor.execute("""
-CREATE TABLE IF NOT EXISTS inventory (
+CREATE TABLE IF NOT EXISTS clans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    rarity TEXT,
-    bonus INTEGER
-)
-""")
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS equipped (
-    user_id INTEGER PRIMARY KEY,
-    clothes_rarity TEXT,
-    clothes_bonus INTEGER DEFAULT 0
+    name TEXT UNIQUE,
+    owner_id INTEGER,
+    level INTEGER DEFAULT 1,
+    bank INTEGER DEFAULT 0
 )
 """)
 
