@@ -1,13 +1,8 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-main_menu = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton("👤 Профиль", callback_data="menu_profile"),
-            InlineKeyboardButton("🏰 Кланы", callback_data="menu_clans")
-        ],
-        [
-            InlineKeyboardButton("💎 Донат", callback_data="menu_donate")
-        ]
-    ]
-)
+main_menu = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton("💰 Collect", callback_data="noop")],
+    [InlineKeyboardButton("🏪 Shop", callback_data="noop")],
+    [InlineKeyboardButton("🏰 Clans", callback_data="noop")],
+    [InlineKeyboardButton("💎 Donate", callback_data="noop")]
+])
