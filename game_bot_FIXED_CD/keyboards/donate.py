@@ -1,9 +1,24 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-donate_kb = InlineKeyboardMarkup(
+donate_menu = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton("💎 Купить донат", callback_data="donate_buy")],
-        [InlineKeyboardButton("📦 Мой донат", callback_data="donate_my")],
-        [InlineKeyboardButton("⬅️ Назад", callback_data="menu_back")]
+        [
+            InlineKeyboardButton(
+                text="💎 Buy donate",
+                callback_data="donate_buy"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="📦 My donate",
+                callback_data="donate_my"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="⬅️ Back",
+                callback_data="back_main"
+            )
+        ]
     ]
 )
