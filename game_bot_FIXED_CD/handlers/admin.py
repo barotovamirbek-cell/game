@@ -1,18 +1,24 @@
-from aiogram import Router
-from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram import Router, F
+from aiogram.types import CallbackQuery, Message
 from config import ADMIN_ID
-from database import cursor, conn
+from keyboards.admin import admin_menu
+from database import db
 
 router = Router()
 
-@router.message(Command("addmoney"))
-async def addmoney(msg: Message):
-    if msg.from_user.id != ADMIN_ID:
+def is_admin(user_id: int) -> bool:
+    return user_id == ADMIN_ID
+
+@router.message(F.text == "/admin")
+async def admin_cmd(msg: Message):
+    if not is_admin(msg.from_user.id):
+        return
+    await msg.answer("🔧 Админ панель", reply_markup=admin_menu)
+
+@router.callback_query(F.callback_data == "admin_stats")
+async def admin_stats(call: CallbackQuery):
+    if not is_admin(call.from_user.id):
         return
 
-    _, uid, amount = msg.text.split()
-    cursor.execute("UPDATE users SET money=money+? WHERE user_id=?", (int(amount), int(uid)))
-    conn.commit()
-
-    await msg.answer("✅ Готово")
+    users = db.count_users()
+    await call.message.edit_text(f"📊 Пользователей: {users}", reply_markup=admin_menu)
