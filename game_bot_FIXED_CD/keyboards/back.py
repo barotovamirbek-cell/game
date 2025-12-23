@@ -1,5 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 back_kb = InlineKeyboardMarkup(
-    inline_keyboard=[[InlineKeyboardButton("⬅️ Назад", callback_data="menu_back")]]
+    inline_keyboard=[
+        [InlineKeyboardButton(text="⬅️ Назад", callback_data="menu_back")]
+    ]
 )
