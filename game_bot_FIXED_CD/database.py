@@ -27,3 +27,17 @@ CREATE TABLE IF NOT EXISTS clans (
 """)
 
 conn.commit()
+
+def up_house(self, user_id):
+    self.cur.execute(
+        "UPDATE users SET house_lvl = house_lvl + 1 WHERE user_id=?",
+        (user_id,)
+    )
+    self.conn.commit()
+
+def up_car(self, user_id):
+    self.cur.execute(
+        "UPDATE users SET car_lvl = car_lvl + 1 WHERE user_id=?",
+        (user_id,)
+    )
+    self.conn.commit()
